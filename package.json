@@ -1,0 +1,9 @@
+{
+  "name": "frontend-ehtp",
+  "version": "1.0.0",
+  "description": "Frontend matchs du jour — Azure Static Web Apps",
+  "private": true,
+  "scripts": {
+    "build": "echo Static site, no build step"
+  }
+}
