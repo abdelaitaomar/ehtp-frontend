@@ -8,11 +8,51 @@
 </head>
 <body>
   <header class="header">
-    <div class="container">
-      <h1 class="logo">frontend-ehtp</h1>
-      <p class="tagline">Matchs en direct & résultats du jour</p>
+    <div class="container header-flex">
+      <div>
+        <h1 class="logo">frontend-ehtp</h1>
+        <p class="tagline">Matchs en direct & résultats du jour</p>
+      </div>
+      <button type="button" class="btn-add-match" id="btn-open-dialog">Ajouter un match</button>
     </div>
   </header>
+
+  <dialog id="dialog-add-match" class="dialog" aria-labelledby="dialog-title" aria-describedby="dialog-desc">
+    <div class="dialog-inner">
+      <h2 id="dialog-title" class="dialog-title">Nouveau match</h2>
+      <p id="dialog-desc" class="dialog-desc">Renseignez les équipes et le score.</p>
+      <form id="form-add-match" class="form-add-match">
+        <label class="form-label">Équipe domicile <span class="required">*</span></label>
+        <input type="text" name="home" class="form-input" required placeholder="ex. PSG">
+        <label class="form-label">Équipe extérieur <span class="required">*</span></label>
+        <input type="text" name="away" class="form-input" required placeholder="ex. OM">
+        <div class="form-row-two">
+          <div>
+            <label class="form-label">Score domicile</label>
+            <input type="number" name="homeScore" class="form-input" min="0" value="0">
+          </div>
+          <div>
+            <label class="form-label">Score extérieur</label>
+            <input type="number" name="awayScore" class="form-input" min="0" value="0">
+          </div>
+        </div>
+        <label class="form-label">Statut</label>
+        <select name="status" class="form-input">
+          <option value="live">En direct</option>
+          <option value="finished">Terminé</option>
+        </select>
+        <label class="form-label">Minute</label>
+        <input type="number" name="minute" class="form-input" min="0" max="120" value="0" placeholder="0">
+        <label class="form-label">Compétition</label>
+        <input type="text" name="competition" class="form-input" placeholder="ex. Ligue 1">
+        <div id="form-add-error" class="form-error" hidden></div>
+        <div class="dialog-actions">
+          <button type="button" class="btn btn-cancel" id="btn-close-dialog">Annuler</button>
+          <button type="submit" class="btn btn-submit">Ajouter le match</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
 
   <main class="main container">
     <section class="section" aria-labelledby="live-title">

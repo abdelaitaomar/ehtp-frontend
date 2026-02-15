@@ -123,4 +123,90 @@
 
   // Rafraîchir les matchs live toutes les 30 secondes
   setInterval(fetchLive, 30000);
+
+  // ----- Dialog Ajouter un match -----
+  var dialog = document.getElementById('dialog-add-match');
+  var btnOpen = document.getElementById('btn-open-dialog');
+  var btnClose = document.getElementById('btn-close-dialog');
+  var formAdd = document.getElementById('form-add-match');
+  var formError = document.getElementById('form-add-error');
+
+  if (btnOpen && dialog) {
+    btnOpen.addEventListener('click', function () {
+      dialog.showModal();
+      formError.hidden = true;
+    });
+  }
+
+  if (btnClose && dialog) {
+    btnClose.addEventListener('click', function () {
+      dialog.close();
+    });
+  }
+
+  if (dialog) {
+    dialog.addEventListener('click', function (e) {
+      if (e.target === dialog) dialog.close();
+    });
+  }
+
+  if (formAdd) {
+    formAdd.addEventListener('submit', function (e) {
+      e.preventDefault();
+      formError.hidden = true;
+
+      var fd = new FormData(formAdd);
+      var home = (fd.get('home') || '').trim();
+      var away = (fd.get('away') || '').trim();
+      var homeScore = parseInt(fd.get('homeScore'), 10) || 0;
+      var awayScore = parseInt(fd.get('awayScore'), 10) || 0;
+      var status = fd.get('status') || 'live';
+      var minute = parseInt(fd.get('minute'), 10) || 0;
+      var competition = (fd.get('competition') || '').trim();
+
+      if (!home || !away) {
+        formError.textContent = 'Veuillez remplir les équipes domicile et extérieur.';
+        formError.hidden = false;
+        return;
+      }
+
+      var submitBtn = formAdd.querySelector('.btn-submit');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+      }
+
+      fetch(API_BASE + '/api/matches', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          home: home,
+          away: away,
+          homeScore: homeScore,
+          awayScore: awayScore,
+          status: status,
+          minute: minute,
+          competition: competition
+        })
+      })
+        .then(function (res) {
+          return res.json().then(function (json) {
+            if (!res.ok) throw new Error(json.error || 'Erreur ' + res.status);
+            return json;
+          });
+        })
+        .then(function () {
+          dialog.close();
+          formAdd.reset();
+          fetchLive();
+          fetchResults();
+        })
+        .catch(function (err) {
+          formError.textContent = err.message || 'Erreur réseau.';
+          formError.hidden = false;
+        })
+        .finally(function () {
+          if (submitBtn) submitBtn.disabled = false;
+        });
+    });
+  }
 })();
