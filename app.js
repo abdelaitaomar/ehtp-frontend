@@ -33,6 +33,7 @@
     var card = document.createElement('article');
     card.className = 'match-card' + (isLive ? ' live' : '');
     card.setAttribute('role', 'listitem');
+    card.setAttribute('data-match-id', match.id);
 
     var meta = '';
     if (isLive && match.minute != null) {
@@ -45,11 +46,17 @@
       meta = '<div class="meta">' + meta + '</div>';
     }
 
+    var actions = '<div class="match-actions">' +
+      '<button type="button" class="btn-match btn-edit" data-match-id="' + escapeHtml(match.id) + '" aria-label="Modifier">Modifier</button>' +
+      '<button type="button" class="btn-match btn-delete" data-match-id="' + escapeHtml(match.id) + '" aria-label="Supprimer">Supprimer</button>' +
+      '</div>';
+
     card.innerHTML =
       '<span class="team">' + escapeHtml(match.home) + '</span>' +
       '<span class="score">' + (match.homeScore != null ? match.homeScore : '-') + ' - ' + (match.awayScore != null ? match.awayScore : '-') + '</span>' +
       '<span class="team">' + escapeHtml(match.away) + '</span>' +
-      meta;
+      meta +
+      actions;
 
     return card;
   }
@@ -80,6 +87,67 @@
     list.forEach(function (match) {
       container.appendChild(createMatchCard(match, isLive));
     });
+    attachMatchActions(container);
+  }
+
+  function attachMatchActions(container) {
+    container.querySelectorAll('.btn-edit').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-match-id');
+        openEditDialog(id);
+      });
+    });
+    container.querySelectorAll('.btn-delete').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-match-id');
+        deleteMatch(id);
+      });
+    });
+  }
+
+  function openEditDialog(matchId) {
+    fetch(API_BASE + '/api/matches')
+      .then(function (res) { return res.json(); })
+      .then(function (json) {
+        var list = json && json.data ? json.data : [];
+        var match = list.find(function (m) { return m.id === matchId; });
+        if (!match) return;
+        formAdd.querySelector('[name="home"]').value = match.home || '';
+        formAdd.querySelector('[name="away"]').value = match.away || '';
+        formAdd.querySelector('[name="homeScore"]').value = match.homeScore != null ? match.homeScore : 0;
+        formAdd.querySelector('[name="awayScore"]').value = match.awayScore != null ? match.awayScore : 0;
+        formAdd.querySelector('[name="status"]').value = match.status || 'live';
+        formAdd.querySelector('[name="minute"]').value = match.minute != null ? match.minute : 0;
+        formAdd.querySelector('[name="competition"]').value = match.competition || '';
+        formAdd.setAttribute('data-edit-id', matchId);
+        var title = document.getElementById('dialog-title');
+        var submitBtn = formAdd.querySelector('.btn-submit');
+        if (title) title.textContent = 'Modifier le match';
+        if (submitBtn) submitBtn.textContent = 'Enregistrer';
+        formError.hidden = true;
+        dialog.showModal();
+      })
+      .catch(function () {
+        formError.textContent = 'Impossible de charger le match.';
+        formError.hidden = false;
+        dialog.showModal();
+      });
+  }
+
+  function deleteMatch(matchId) {
+    if (!confirm('Supprimer ce match ?')) return;
+    fetch(API_BASE + '/api/matches/' + matchId, { method: 'DELETE' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('Erreur ' + res.status);
+        return res.json();
+      })
+      .then(function () {
+        fetchLive();
+        fetchResults();
+      })
+      .catch(function (err) {
+        alert(err.message || 'Erreur lors de la suppression.');
+      });
   }
 
   function fetchLive() {
@@ -133,6 +201,12 @@
 
   if (btnOpen && dialog) {
     btnOpen.addEventListener('click', function () {
+      formAdd.removeAttribute('data-edit-id');
+      formAdd.reset();
+      var title = document.getElementById('dialog-title');
+      var submitBtn = formAdd.querySelector('.btn-submit');
+      if (title) title.textContent = 'Nouveau match';
+      if (submitBtn) submitBtn.textContent = 'Ajouter le match';
       dialog.showModal();
       formError.hidden = true;
     });
@@ -175,8 +249,12 @@
         submitBtn.disabled = true;
       }
 
-      fetch(API_BASE + '/api/matches', {
-        method: 'POST',
+      var editId = formAdd.getAttribute('data-edit-id');
+      var url = editId ? API_BASE + '/api/matches/' + editId : API_BASE + '/api/matches';
+      var method = editId ? 'PUT' : 'POST';
+
+      fetch(url, {
+        method: method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           home: home,
@@ -196,7 +274,12 @@
         })
         .then(function () {
           dialog.close();
+          formAdd.removeAttribute('data-edit-id');
           formAdd.reset();
+          var title = document.getElementById('dialog-title');
+          var submitLabel = formAdd.querySelector('.btn-submit');
+          if (title) title.textContent = 'Nouveau match';
+          if (submitLabel) submitLabel.textContent = 'Ajouter le match';
           fetchLive();
           fetchResults();
         })

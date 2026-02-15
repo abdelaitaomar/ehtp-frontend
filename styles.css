@@ -344,6 +344,51 @@ body {
   font-weight: 600;
 }
 
+.match-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  padding-top: 0.5rem;
+  margin-top: 0.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.match-card.live .match-actions {
+  border-top-color: var(--live-border);
+}
+
+.btn-match {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--font);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.btn-edit {
+  color: var(--accent-dark);
+  background: rgba(22, 163, 74, 0.15);
+}
+
+.btn-edit:hover {
+  background: rgba(22, 163, 74, 0.25);
+  color: var(--text);
+}
+
+.btn-delete {
+  color: var(--error);
+  background: var(--error-bg);
+}
+
+.btn-delete:hover {
+  background: #fecaca;
+  color: #991b1b;
+}
+
 /* ----- States ----- */
 .state-message {
   padding: 1.75rem 1.5rem;
