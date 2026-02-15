@@ -2,7 +2,7 @@
   'use strict';
 
   // URL de votre backend — Azure ou en local (ex: http://localhost:8080)
-  const API_BASE = 'https://VOTRE-APP.azurewebsites.net';
+  const API_BASE = 'https://backservce-c0guhkfxa6cfa2bk.westeurope-01.azurewebsites.net/';
 
   const liveContainer = document.getElementById('live-matches');
   const liveLoading = document.getElementById('live-loading');
