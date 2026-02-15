@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>frontend-ehtp — Matchs du jour</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1 class="logo">frontend-ehtp</h1>
+      <p class="tagline">Matchs en direct & résultats du jour</p>
+    </div>
+  </header>
+
+  <main class="main container">
+    <section class="section" aria-labelledby="live-title">
+      <h2 id="live-title" class="section-title">
+        <span class="live-dot" aria-hidden="true"></span>
+        Matchs en direct
+      </h2>
+      <div id="live-matches" class="matches-list" role="list">
+        <div id="live-loading" class="state-message">Chargement…</div>
+        <div id="live-error" class="state-message error" hidden></div>
+        <div id="live-empty" class="state-message" hidden>Aucun match en direct.</div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="results-title">
+      <h2 id="results-title" class="section-title">Résultats du jour</h2>
+      <div id="results-matches" class="matches-list" role="list">
+        <div id="results-loading" class="state-message">Chargement…</div>
+        <div id="results-error" class="state-message error" hidden></div>
+        <div id="results-empty" class="state-message" hidden>Aucun résultat pour le moment.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>API backend : <code id="api-url-display">—</code></p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
