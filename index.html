@@ -3,83 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>frontend-ehtp — Matchs du jour</title>
+  <title>frontend-ehtp — Missions</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="header">
-    <div class="container header-flex">
-      <div>
-        <h1 class="logo">frontend-ehtp</h1>
-        <p class="tagline">Matchs en direct & résultats du jour</p>
-      </div>
-      <button type="button" class="btn-add-match" id="btn-open-dialog">Ajouter un match</button>
+    <div class="container">
+      <h1 class="logo">frontend-ehtp</h1>
+      <p class="tagline">Missions par compétences</p>
     </div>
   </header>
 
-  <dialog id="dialog-add-match" class="dialog" aria-labelledby="dialog-title" aria-describedby="dialog-desc">
-    <div class="dialog-inner">
-      <h2 id="dialog-title" class="dialog-title">Nouveau match</h2>
-      <p id="dialog-desc" class="dialog-desc">Renseignez les équipes et le score.</p>
-      <form id="form-add-match" class="form-add-match">
-        <label class="form-label">Équipe domicile <span class="required">*</span></label>
-        <input type="text" name="home" class="form-input" required placeholder="ex. PSG">
-        <label class="form-label">Équipe extérieur <span class="required">*</span></label>
-        <input type="text" name="away" class="form-input" required placeholder="ex. OM">
-        <div class="form-row-two">
-          <div>
-            <label class="form-label">Score domicile</label>
-            <input type="number" name="homeScore" class="form-input" min="0" value="0">
-          </div>
-          <div>
-            <label class="form-label">Score extérieur</label>
-            <input type="number" name="awayScore" class="form-input" min="0" value="0">
-          </div>
-        </div>
-        <label class="form-label">Statut</label>
-        <select name="status" class="form-input">
-          <option value="live">En direct</option>
-          <option value="finished">Terminé</option>
-        </select>
-        <label class="form-label">Minute</label>
-        <input type="number" name="minute" class="form-input" min="0" max="120" value="0" placeholder="0">
-        <label class="form-label">Compétition</label>
-        <input type="text" name="competition" class="form-input" placeholder="ex. Ligue 1">
-        <div id="form-add-error" class="form-error" hidden></div>
-        <div class="dialog-actions">
-          <button type="button" class="btn btn-cancel" id="btn-close-dialog">Annuler</button>
-          <button type="submit" class="btn btn-submit">Ajouter le match</button>
-        </div>
-      </form>
-    </div>
-  </dialog>
-
   <main class="main container">
-    <section class="section" aria-labelledby="live-title">
-      <h2 id="live-title" class="section-title">
-        <span class="live-dot" aria-hidden="true"></span>
-        Matchs en direct
-      </h2>
-      <div id="live-matches" class="matches-list" role="list">
-        <div id="live-loading" class="state-message">Chargement…</div>
-        <div id="live-error" class="state-message error" hidden></div>
-        <div id="live-empty" class="state-message" hidden>Aucun match en direct.</div>
+    <section class="section section-missions" aria-labelledby="missions-title">
+      <h2 id="missions-title" class="section-title">Missions</h2>
+      <p class="missions-desc">Indiquez vos compétences (séparées par des virgules) pour trouver les missions qui correspondent (au moins 2 compétences).</p>
+      <div class="missions-search">
+        <input type="text" id="missions-skills" class="form-input missions-input" placeholder="ex. Python, SQL, React, JavaScript" aria-label="Compétences">
+        <button type="button" id="missions-search-btn" class="btn btn-submit">Rechercher</button>
       </div>
-    </section>
-
-    <section class="section" aria-labelledby="results-title">
-      <h2 id="results-title" class="section-title">Résultats du jour</h2>
-      <div id="results-matches" class="matches-list" role="list">
-        <div id="results-loading" class="state-message">Chargement…</div>
-        <div id="results-error" class="state-message error" hidden></div>
-        <div id="results-empty" class="state-message" hidden>Aucun résultat pour le moment.</div>
+      <div id="missions-result" class="missions-result">
+        <div id="missions-loading" class="state-message" hidden>Recherche en cours…</div>
+        <div id="missions-error" class="state-message error" hidden></div>
+        <div id="missions-empty" class="state-message" hidden>Saisissez des compétences et cliquez sur Rechercher.</div>
+        <div id="missions-list" class="missions-list" hidden></div>
       </div>
     </section>
   </main>
 
   <footer class="footer">
     <div class="container">
-      <p>API backend : <code id="api-url-display">—</code></p>
+      <p>Azure Function Missions : <code id="api-url-display">—</code></p>
     </div>
   </footer>
 
